@@ -14,6 +14,11 @@ add_library(Scripts
   src/STXS_Filter.cpp
 )
 
+add_library(Analysis
+  src/cConstants.cc 
+  src/Discriminants.cc
+)
+
 find_package(
   ROOT 6.38 CONFIG REQUIRED
 )
@@ -23,5 +28,10 @@ target_link_libraries(${PROJECT_NAME}
     ${ROOT_LIBRARIES}
   PRIVATE
     Scripts
+    Analysis
+)
+
+target_include_directories(Analysis
+  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/interface
 )
 
