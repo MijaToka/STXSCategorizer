@@ -1,7 +1,9 @@
 #include "interface/STXS_common.h"
 #include "src/Preprocess.cpp"
 #include "src/STXS_categorization0.cpp"
+#include "src/STXS_categorization1p2.cpp"
 #include "src/STXS_script.cpp"
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -24,6 +26,10 @@ int main(int argc, char *argv[]) {
   auto step0 = first_categorization(df);
 
   snapshot(step0, "output");
+
+  auto step1 = second_categorization(step0);
+
+  snapshot(step1, "output");
 
   return 0;
 }

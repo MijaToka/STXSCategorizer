@@ -5,8 +5,12 @@
 #include <ROOT/RDF/RInterface.hxx>
 #include <TMath.h>
 #include <compare>
+#include <iostream>
+#include <limits>
 #include <map>
 #include <set>
+
+constexpr float infty = std::numeric_limits<float>::infinity();
 
 enum class STXS0 {
   VBF_2jet,
@@ -22,6 +26,15 @@ static const STXS0 STXS0_categories[] = {
     STXS0::VBF_2jet,     STXS0::VH_hadronic,  STXS0::VH_leptonic,
     STXS0::ttH_hadronic, STXS0::ttH_leptonic, STXS0::VBF_1jet,
     STXS0::Untagged};
+
+static const std::map<STXS0, std::string> categoryNames = {
+    {STXS0::VBF_2jet, "VBF_2jet"},
+    {STXS0::VH_hadronic, "VH_hadronic"},
+    {STXS0::VH_leptonic, "VH_leptonic"},
+    {STXS0::ttH_hadronic, "ttH_hadronic"},
+    {STXS0::ttH_leptonic, "ttH_leptonic"},
+    {STXS0::VBF_1jet, "VBF_1jet"},
+    {STXS0::Untagged, "Untagged"}};
 
 enum Category { Pt, Mjj, Hjj_pt, Hj_H_pt, deltaPhi_jj, nJets };
 
@@ -73,11 +86,25 @@ struct STXS1 {
   bool operator!=(const STXS1 &other) const { return !(*this == other); };
 };
 
+STXS1 create_range(STXS1 prevSTXS1, const Category column, Float_t lower,
+                   Float_t upper);
+
+std::set<STXS1> cut_ranges(STXS1 prevSTXS1, const Category column,
+                           std::vector<Float_t> ranges);
+
 void snapshot(ROOT::RDF::RNode df, std::string output_dir,
               std::string file_name);
 
 void snapshot(ROOT::RDF::RNode df, std::string output_dir);
 
 void snapshot(std::map<STXS0, ROOT::RDF::RNode> df_map, std::string output_dir);
+
+void snapshot(std::map<STXS1, ROOT::RDF::RNode> df_map, std::string output_dir);
+
+void printCategory(STXS1 &s);
+
+std::string generate_STXS1_categoty_name(const STXS1 &s);
+
+ROOT::RDF::RNode applySTXS1(ROOT::RDF::RNode df, const STXS1 &category);
 
 #endif
