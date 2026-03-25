@@ -7,12 +7,11 @@
 #include <map>
 
 std::map<STXS0, ROOT::RDF::RNode> first_categorization(ROOT::RDF::RNode df) {
-  std::map<STXS0, ROOT::RDF::RNode> arr;
 
   df =
       df.Define("VBF2j_mask",
                 [](ROOT::VecOps::RVec<Int_t> nExtraLep, Float_t DVBF2j,
-                   Char_t nJets, Int_t nBtag, Char_t idx) {
+                   Char_t nJets, Int_t nBtag, Short_t idx) {
                   return (nExtraLep[idx] == 0) && (DVBF2j > 0.5) &&
                          (((nJets == 2 || nJets == 3) & (nBtag <= 1)) ||
                           (nJets == 4 && nBtag == 0));
@@ -21,10 +20,12 @@ std::map<STXS0, ROOT::RDF::RNode> first_categorization(ROOT::RDF::RNode df) {
                  "nBtagged_filtered", "bestCandIdx"})
           .Define("VH_had_mask",
                   [](ROOT::VecOps::RVec<Int_t> nExtraLep, Float_t DWHh,
-                     Float_t DZHh, Char_t nJets, Int_t nBtag, Char_t idx) {
-                    return (nExtraLep[idx] == 0) & (DWHh > 0.5 || DZHh > 0.5) &&
-                           ((nJets == 2 || nJets == 3) ||
-                            (nJets == 4 && nBtag == 0));
+                     Float_t DZHh, Char_t nJets, Int_t nBtag, Short_t idx) {
+                    return (idx == -1) ? (nExtraLep[idx] == 0) &
+                                                 (DWHh > 0.5 || DZHh > 0.5) &&
+                                             ((nJets == 2 || nJets == 3) ||
+                                              (nJets == 4 && nBtag == 0))
+                                       : false;
                   },
                   {"ZZCand_nExtraLep", "DWHh_ME", "DZHh_ME", "nCleanedJetsPt30",
                    "nBtagged_filtered", "bestCandIdx"})
@@ -35,47 +36,58 @@ std::map<STXS0, ROOT::RDF::RNode> first_categorization(ROOT::RDF::RNode df) {
                   {"LepPdgId_4", "LepPdgId_5"})
           .Define("VH_lep_mask",
                   [](ROOT::VecOps::RVec<Int_t> nExtraLep, Int_t nBtag,
-                     Bool_t is_OSSF, Int_t nJets, Char_t idx) {
-                    return (nExtraLep[idx] <= 3 && nBtag == 0 &&
-                            (nExtraLep == 1 || is_OSSF)) ||
-                           (nExtraLep[idx] >= 1 && nJets == 0);
+                     Bool_t is_OSSF, Char_t nJets, Short_t idx) {
+                    return (idx == -1) ? (nExtraLep[idx] <= 3 && nBtag == 0 &&
+                                          (nExtraLep[idx] == 1 || is_OSSF)) ||
+                                             (nExtraLep[idx] >= 1 && nJets == 0)
+                                       : false;
                   },
                   {"ZZCand_nExtraLep", "nBtagged_filtered", "is_OSSF_pair",
                    "nCleanedJetsPt30", "bestCandIdx"})
           .Define("ttH_had_mask",
-                  [](ROOT::VecOps::RVec<Int_t> nExtraLep, Int_t nJets,
-                     Int_t nBtag, Char_t idx) {
-                    return nJets >= 4 && nBtag >= 1 && nExtraLep[idx] == 0;
+                  [](ROOT::VecOps::RVec<Int_t> nExtraLep, Char_t nJets,
+                     Int_t nBtag, Short_t idx) {
+                    return (idx == -1)
+                               ? nJets >= 4 && nBtag >= 1 && nExtraLep[idx] == 0
+                               : false;
                   },
                   {"ZZCand_nExtraLep", "nCleanedJetsPt30", "nBtagged_filtered",
                    "bestCandIdx"})
           .Define("ttH_lep_mask",
-                  [](ROOT::VecOps::RVec<Int_t> nExtraLep, Char_t idx) {
-                    return nExtraLep[idx] >= 1;
+                  [](ROOT::VecOps::RVec<Int_t> nExtraLep, Short_t idx) {
+                    return (idx == -1) ? nExtraLep[idx] >= 1 : false;
                   },
                   {"ZZCand_nExtraLep", "bestCandIdx"})
           .Define("VBF1j_mask",
                   [](ROOT::VecOps::RVec<Int_t> nExtraLep, Float_t DVBF1j,
-                     Int_t nJets, Char_t idx) {
-                    return nJets == 1 && nExtraLep[idx] == 0 && DVBF1j > 0.7;
+                     Char_t nJets, Short_t idx) {
+                    return (idx == -1) ? nJets == 1 && nExtraLep[idx] == 0 &&
+                                             DVBF1j > 0.7
+                                       : false;
                   },
                   {"ZZCand_nExtraLep", "DVBF1j_ME", "nCleanedJetsPt30",
                    "bestCandIdx"});
 
-  arr[STXS0::VBF_2jet] = df.Filter("VBF2j_mask");
-  arr[STXS0::VH_hadronic] = df.Filter("!VBF2j_mask && VH_had_mask");
-  arr[STXS0::VH_leptonic] =
-      df.Filter("!VBF2j_mask && !VH_had_mask && VH_lep_mask");
-  arr[STXS0::ttH_hadronic] =
-      df.Filter("!VBF2j_mask && !VH_had_mask && !VH_lep_mask && ttH_had_mask");
-  arr[STXS0::ttH_leptonic] =
+  std::map<STXS0, ROOT::RDF::RNode> arr;
+
+  arr.emplace(STXS0::VBF_2jet, df.Filter("VBF2j_mask"));
+  arr.emplace(STXS0::VH_hadronic, df.Filter("!VBF2j_mask && VH_had_mask"));
+  arr.emplace(STXS0::VH_leptonic,
+              df.Filter("!VBF2j_mask && !VH_had_mask && VH_lep_mask"));
+  arr.emplace(
+      STXS0::ttH_hadronic,
+      df.Filter("!VBF2j_mask && !VH_had_mask && !VH_lep_mask && ttH_had_mask"));
+  arr.emplace(
+      STXS0::ttH_leptonic,
       df.Filter("!VBF2j_mask && !VH_had_mask && !VH_lep_mask && !ttH_had_mask "
-                "&& ttH_lep_mask");
-  arr[STXS0::VBF_1jet] =
+                "&& ttH_lep_mask"));
+  arr.emplace(
+      STXS0::VBF_1jet,
       df.Filter("!VBF2j_mask && !VH_had_mask && !VH_lep_mask && !ttH_had_mask "
-                "&& !ttH_lep_mask && VBF1j_mask");
-  arr[STXS0::Untagged] =
+                "&& !ttH_lep_mask && VBF1j_mask"));
+  arr.emplace(
+      STXS0::Untagged,
       df.Filter("!VBF2j_mask && !VH_had_mask && !VH_lep_mask && !ttH_had_mask "
-                "&& !ttH_lep_mask && !VBF1j_mask");
+                "&& !ttH_lep_mask && !VBF1j_mask"));
   return arr;
 }

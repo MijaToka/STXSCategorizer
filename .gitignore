@@ -4,3 +4,7 @@ result*
 # Misc
 .direnv
 build*
+output*
+df_output.pdf
+output.pdf
+filter_dataframe.py

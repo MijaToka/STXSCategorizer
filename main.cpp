@@ -1,4 +1,6 @@
-#include "src/STXS_Filter.cpp"
+#include "interface/STXS_common.h"
+#include "src/Preprocess.cpp"
+#include "src/STXS_categorization0.cpp"
 #include "src/STXS_script.cpp"
 #include <string>
 #include <vector>
@@ -15,6 +17,13 @@ int main(int argc, char *argv[]) {
     files.push_back(argv[i]);
   }
 
-  STXS_Filter(files);
+  auto df = setup(files);
+
+  snapshot(df, "output");
+
+  auto step0 = first_categorization(df);
+
+  snapshot(step0, "output");
+
   return 0;
 }
