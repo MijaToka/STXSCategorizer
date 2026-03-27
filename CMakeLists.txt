@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.1.2)
+cmake_minimum_required(VERSION 3.26.5)
 project(STXS1p3-categorization VERSION 0.0.1)
 
 add_executable(${PROJECT_NAME}
