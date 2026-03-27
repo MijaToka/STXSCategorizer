@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 4.1.2)
-project(STXS13-plots VERSION 0.0.1)
+project(STXS1p3-categorization VERSION 0.0.1)
 
 add_executable(${PROJECT_NAME}
   main.cpp

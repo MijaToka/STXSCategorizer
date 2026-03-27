@@ -22,7 +22,7 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        pname = "STXS13-plots"; # package name
+        pname = "STXS1p3-categorization"; # package name
         version = "0.0.1";
         src = ./.;
         buildInputs = with pkgs; [
@@ -49,6 +49,10 @@
       {
         devShells.default = pkgs.mkShell {
           inherit buildInputs nativeBuildInputs;
+
+          shellHook = ''
+            export ROOT_RDF_SNAPSHOT_INFO=0
+          '';
 
           # You can use NIX_CFLAGS_COMPILE to set the default CFLAGS for the shell
           #NIX_CFLAGS_COMPILE = "-g";
