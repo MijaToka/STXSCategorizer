@@ -5,6 +5,9 @@ result*
 .direnv
 build*
 output*
+data*
 df_output.pdf
 output.pdf
 filter_dataframe.py
+.envrc
+run_all.sh
