@@ -22,7 +22,7 @@ std::set<STXS1> define_untagged_subcategories() {
 
   STXS1 ggH1j =
       STXS1{.Category = STXS0::Untagged, .nJets = numberJets{.nJet = 1}};
-  for (STXS1 pt_cut : cut_ranges(ggH0j, Pt, {0, 30, 60, 120, 200})) {
+  for (STXS1 pt_cut : cut_ranges(ggH1j, Pt, {0, 30, 60, 120, 200})) {
     untagged_categories.insert(pt_cut);
   }
 
@@ -31,7 +31,7 @@ std::set<STXS1> define_untagged_subcategories() {
                       .nJets = numberJets{.nJet = 2, .above = true}};
   ////ggH2j_lowMjj
   STXS1 ggH2j_lowMjj = create_range(ggH2j, Mjj, 0, 350);
-  for (STXS1 pt_cut : cut_ranges(ggH2j_lowMjj, Pt, {0, 30, 60, 200})) {
+  for (STXS1 pt_cut : cut_ranges(ggH2j_lowMjj, Pt, {0, 30, 60, 120, 200})) {
     for (STXS1 Hjj_pt_cut : cut_ranges(pt_cut, Hjj_pt, {0, 25, infty})) {
       untagged_categories.insert(Hjj_pt_cut);
     }
@@ -143,7 +143,8 @@ std::set<STXS1> define_VH_lep_subcategories() {
   for (int i = 0; i <= 2; i++) {
     STXS1 VHXj = {.Category = STXS0::VH_leptonic,
                   .nJets = numberJets{.nJet = i, .above = i == 2}};
-    for (STXS1 pt_cut : cut_ranges(VHXj, Pt, {0, 75, 150, 250, 400, infty}))
+    for (STXS1 pt_cut :
+         cut_ranges(VHXj, Pt, {0, 75, 150, 250, 400, 600, infty}))
       VH_lep_categories.insert(pt_cut);
   }
 
@@ -154,7 +155,8 @@ std::set<STXS1> define_ttH_subcategories(const STXS0 category) {
   std::set<STXS1> ttH_categories;
 
   STXS1 ttH = STXS1{.Category = category};
-  for (STXS1 pt_cut : cut_ranges(ttH, Pt, {0, 60, 120, 200, 300, 450, infty}))
+  for (STXS1 pt_cut :
+       cut_ranges(ttH, Pt, {0, 60, 120, 200, 300, 450, 650, infty}))
     ttH_categories.insert(pt_cut);
 
   return ttH_categories;

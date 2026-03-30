@@ -45,7 +45,11 @@ struct Range {
   float lower = -999.f;
   float upper = -999.f;
 
-  bool operator<(const Range &other) const { return lower < other.lower; };
+  bool operator<(const Range &other) const {
+    if (lower != other.lower)
+      return lower < other.lower;
+    return upper < other.upper;
+  };
   bool operator==(const Range &other) const {
     return (columns == other.columns) && (lower == other.lower) &&
            (upper == other.upper);
