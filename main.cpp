@@ -122,16 +122,14 @@ int main(int argc, char *argv[]) {
 
   output_dir << "output/" << mode;
 
-  auto df = setup(files[0], mode); // TO DO: add multi file support
-
-  snapshot(df, output_dir.str());
+  auto df = setup(files[0], mode); // TODO: add multi file support
 
   auto step0 = first_categorization(df);
 
-  snapshot(step0, output_dir.str());
-
   auto step1 = second_categorization(step0);
 
+  snapshot(df, output_dir.str());
+  snapshot(step0, output_dir.str());
   snapshot(step1, output_dir.str(), version);
 
   exit(EXIT_SUCCESS);
