@@ -1,8 +1,10 @@
 #include "../interface/STXS_common.h"
+#include <Math/Math.h>
 #include <ROOT/RDF/InterfaceUtils.hxx>
 #include <ROOT/RDF/RInterface.hxx>
 #include <ROOT/RVec.hxx>
 #include <RtypesCore.h>
+#include <cstdlib>
 #include <filesystem>
 #include <map>
 #include <optional>
@@ -48,14 +50,28 @@ std::set<STXS1> cut_ranges(STXS1 prevSTXS1, const Category column,
   return output;
 };
 
+inline void parseValue(std::stringstream &ss, float value) {
+  if (value < 0)
+    ss << "neg";
+  if (std::abs(value) == static_cast<float>(ROOT::Math::Pi()))
+    ss << "Pi";
+  else if (std::abs(value) == static_cast<float>(ROOT::Math::Pi()) / 2)
+    ss << "PiOn2";
+  else
+    ss << std::abs(value);
+}
+
 std::string parseRange(const Range &r) {
   std::stringstream ss;
-  ss << r.lower;
-  if (r.upper != infty)
-    ss << "To" << r.upper;
-  else
+  parseValue(ss, r.lower);
+
+  if (r.upper == infty)
     ss << "above";
 
+  else {
+    ss << "To";
+    parseValue(ss, r.upper);
+  }
   return ss.str();
 };
 

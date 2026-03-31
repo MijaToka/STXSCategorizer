@@ -51,12 +51,14 @@ std::set<STXS1> define_VBF_categories() {
 
   // No VBF0j
   // VBF_1jet is simply itself
-  STXS1 VBF1j = STXS1{.Category = STXS0::VBF_1jet};
+  STXS1 VBF1j =
+      STXS1{.Category = STXS0::VBF_1jet, .nJets = numberJets{.nJet = 1}};
   VBF_categories.insert(VBF1j);
 
   // VBF_2jet subcategories
   // Low m_jj
-  STXS1 VBF2j = STXS1{.Category = STXS0::VBF_2jet};
+  STXS1 VBF2j = STXS1{.Category = STXS0::VBF_2jet,
+                      .nJets = numberJets{.nJet = 2, .above = true}};
   STXS1 VBF2j_lowMjj = create_range(VBF2j, Mjj, 0, 350);
   VBF_categories.insert(VBF2j_lowMjj);
 

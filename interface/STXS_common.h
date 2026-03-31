@@ -30,12 +30,12 @@ static const STXS0 STXS0_categories[] = {
     STXS0::Untagged};
 
 static const std::map<STXS0, std::string> categoryNames = {
-    {STXS0::VBF_2jet, "VBF_2jet"},
+    {STXS0::VBF_2jet, "VBF"},
     {STXS0::VH_hadronic, "VH_hadronic"},
     {STXS0::VH_leptonic, "VH_leptonic"},
     {STXS0::ttH_hadronic, "ttH_hadronic"},
     {STXS0::ttH_leptonic, "ttH_leptonic"},
-    {STXS0::VBF_1jet, "VBF_1jet"},
+    {STXS0::VBF_1jet, "VBF"},
     {STXS0::Untagged, "Untagged"}};
 
 enum Category { Pt, Mjj, Hjj_pt, Hj_H_pt, deltaPhi_jj, nJets };
