@@ -158,8 +158,7 @@ void snapshot(ROOT::RDF::RNode df, const std::string &output_dir,
       "EventWeight_lumi18", "EventWeight_lumi9", "EventWeight_lumi138",
       "production_mode", "HTXS_stage_0", "overallEventWeight",
       "HTXS_stage1_2_cat_pTjet30GeV", "genWeight", "puWeight", "trainWeight",
-      //"HTXS_stage1_2_cat_pTjet30GeV_label",
-      "genEventSumw"};
+      "HTXS_stage1_2_cat_pTjet30GeV_label", "genEventSumw"};
 
   std::filesystem::create_directories(output_dir);
   std::stringstream ss;
