@@ -127,7 +127,7 @@ void snapshot(ROOT::RDF::RNode df, const std::string &output_dir,
       // ZZ candidate features
       "ZZCand_pt", "ZZCand_eta", "ZZCand_phi", "ZZCand_mass",
       "ZZCand_costheta1", "ZZCand_costheta2", "ZZCand_costhetastar",
-      "ZZCand_Phi1", "ZZCand_nExtraLep", "ZZjj_pt",
+      "ZZCand_Phi1", "ZZCand_nExtraLep", "ZZjj_pt", "bestCandIdx",
 
       // MET
       "PFMET_pt",
