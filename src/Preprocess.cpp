@@ -656,6 +656,21 @@ ROOT::RDF::RNode setup(std::string &file, const std::string &mode) {
                      return 9.693 * overalW * 1000 / genEventSumw;
                    },
                    {"overallEventWeight"})
+           .Define("EventWeight_lumi250",
+                   [genEventSumw](Float_t overalW) {
+                     return 250 * overalW * 1000 / genEventSumw;
+                   },
+                   {"overallEventWeight"})
+           .Define("EventWeight_lumi300",
+                   [genEventSumw](Float_t overalW) {
+                     return 300 * overalW * 1000 / genEventSumw;
+                   },
+                   {"overallEventWeight"})
+           .Define("EventWeight_lumi350",
+                   [genEventSumw](Float_t overalW) {
+                     return 300 * overalW * 1000 / genEventSumw;
+                   },
+                   {"overallEventWeight"})
            .Define("production_mode", [mode]() { return mode; }, {})
            .Define("trainWeight",
                    [](Float_t genW, Float_t puW) { return genW * puW; },
