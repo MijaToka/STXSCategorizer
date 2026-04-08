@@ -1,4 +1,4 @@
-#include "../interface/cConstants.h"
+#include "cConstants.h"
 #include <TFile.h>
 
 #include <cassert>

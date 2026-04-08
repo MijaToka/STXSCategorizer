@@ -1,5 +1,5 @@
-#include "../interface/Discriminants.h"
-#include "../interface/cConstants.h"
+#include "Discriminants.h"
+#include "cConstants.h"
 
 #include <cmath>
 

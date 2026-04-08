@@ -11,3 +11,5 @@ output.pdf
 filter_dataframe.py
 .envrc
 run_all.sh
+compile_commands.json
+.cache/clangd/index

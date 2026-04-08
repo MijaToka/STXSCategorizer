@@ -5,6 +5,8 @@ add_executable(${PROJECT_NAME}
   main.cpp
 )
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 install(TARGETS ${PROJECT_NAME}
   RUNTIME DESTINATION bin
 )

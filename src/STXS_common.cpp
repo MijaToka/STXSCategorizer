@@ -1,4 +1,4 @@
-#include "../interface/STXS_common.h"
+#include "STXS_common.h"
 #include <Math/Math.h>
 #include <ROOT/RDF/InterfaceUtils.hxx>
 #include <ROOT/RDF/RInterface.hxx>
