@@ -18,6 +18,7 @@ add_library(Scripts
   src/STXS_categorization0.cpp
   src/STXS_categorization1p2.cpp
   src/STXS_categorization1p3.cpp
+  src/parseArgs.cpp
 )
 
 add_library(Analysis
