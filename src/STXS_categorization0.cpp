@@ -4,28 +4,31 @@
 #include <ROOT/RDF/RVariationsDescription.hxx>
 #include <ROOT/RVec.hxx>
 #include <RtypesCore.h>
-#include <iostream>
 #include <map>
 #include <sstream>
 
 std::map<STXS0, ROOT::RDF::RNode> first_categorization(ROOT::RDF::RNode df) {
 
   df =
-      df.Define("VBF2j_mask",
-                [](ROOT::VecOps::RVec<Int_t> nExtraLep, Float_t DVBF2j,
-                   Char_t nJets, Int_t nBtag, Short_t idx) {
-                  return (nExtraLep[idx] == 0) && (DVBF2j > 0.5) &&
-                         (((nJets == 2 || nJets == 3) && (nBtag <= 1)) ||
-                          (nJets == 4 && nBtag == 0));
-                },
-                {"ZZCand_nExtraLep", "DVBF2j_ME", "nCleanedJetsPt30",
-                 "nBtagged_filtered", "bestCandIdx"})
+      df.Define(
+            "VBF2j_mask",
+            [](ROOT::VecOps::RVec<Int_t> nExtraLep, Float_t DVBF2j,
+               Char_t nJets, Int_t nBtag, Short_t idx) {
+              return (idx != -1)
+                         ? (nExtraLep[idx] == 0) && (DVBF2j > 0.5) &&
+                               (((nJets == 2 || nJets == 3) && (nBtag <= 1)) ||
+                                (nJets == 4 && nBtag == 0))
+                         : false;
+            },
+            {"ZZCand_nExtraLep", "DVBF2j_ME", "nCleanedJetsPt30",
+             "nBtagged_filtered", "bestCandIdx"})
           .Define("VH_had_mask",
                   [](ROOT::VecOps::RVec<Int_t> nExtraLep, Float_t DWHh,
                      Float_t DZHh, Char_t nJets, Int_t nBtag, Short_t idx) {
                     return (idx != -1) ? (nExtraLep[idx] == 0) &&
                                              (DWHh > 0.5 || DZHh > 0.5) &&
-                                             ((nJets == 2 || nJets == 3) ||
+                                             (((nJets == 2 || nJets == 3) &&
+                                               nBtag <= 1) ||
                                               (nJets == 4 && nBtag == 0))
                                        : false;
                   },
@@ -56,10 +59,15 @@ std::map<STXS0, ROOT::RDF::RNode> first_categorization(ROOT::RDF::RNode df) {
                   {"ZZCand_nExtraLep", "nCleanedJetsPt30", "nBtagged_filtered",
                    "bestCandIdx"})
           .Define("ttH_lep_mask",
-                  [](ROOT::VecOps::RVec<Int_t> nExtraLep, Short_t idx) {
-                    return (idx != -1) ? nExtraLep[idx] >= 1 : false;
+                  [](ROOT::VecOps::RVec<Int_t> nExtraLep, Char_t nJets,
+                     Int_t nBtag, Short_t idx) {
+                    return (idx != -1)
+                               ? (nBtag >= 2 || (nBtag >= 1 && nJets >= 2)) &&
+                                     nExtraLep[idx] >= 1
+                               : false;
                   },
-                  {"ZZCand_nExtraLep", "bestCandIdx"})
+                  {"ZZCand_nExtraLep", "nCleanedJetsPt30", "nBtagged_filtered",
+                   "bestCandIdx"})
           .Define("VBF1j_mask",
                   [](ROOT::VecOps::RVec<Int_t> nExtraLep, Float_t DVBF1j,
                      Char_t nJets, Short_t idx) {
