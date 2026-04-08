@@ -6,19 +6,22 @@
 #include "src/STXS_script.cpp"
 #include <ROOT/RDF/InterfaceUtils.hxx>
 #include <ROOT/RDF/RInterface.hxx>
+#include <algorithm>
 #include <cstdlib>
 #include <exception>
 #include <functional>
 #include <iostream>
+#include <ostream>
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <vector>
 
 std::string help_message() {
   std::stringstream ss;
   ss << "Usage:\n\tSTXS13-plots -f ROOT_FILE [-f ROOT_FILE]... -v VERSION -m "
-        "MODE"
+        "MODE [-d SUB_DIR]"
      << std::endl
      << std::endl
      << "Options:" << std::endl
@@ -27,6 +30,10 @@ std::string help_message() {
      << "\t-m,--mode MODE\tproduction mode (ggH, qqH, ttH, VH) determines\n"
         "\t\t\tthe output directory"
      << std::endl
+     << "\t-d SUB_DIR\tdefines the subdirectory under output the files "
+        "will\n\t\t\tbe generated"
+     << std::endl
+     << "\t--verbose\tenables the printing out of the input specification"
      << "\t-h, --help\tShow this text.";
 
   return ss.str();
@@ -34,11 +41,15 @@ std::string help_message() {
 
 void parseArguments(
     int argc, char *argv[], std::vector<std::string> &files, int &version,
-    std::string &mode,
+    std::string &mode, std::string &subfolder,
     std::function<std::map<STXS1, ROOT::RDF::RNode>(
         std::map<STXS0, ROOT::RDF::RNode>)> &second_categorization) {
 
   bool hasFiles(false), hasVersion(false), hasMode(false);
+
+  std::vector<std::string> args(argv, argv + argc);
+  bool verbose =
+      (std::find(args.begin(), args.end(), "--verbose") != args.end());
 
   if (argc < 2) {
     std::cerr << help_message();
@@ -52,13 +63,20 @@ void parseArguments(
     }
 
     if (std::string(argv[i]) == "-f") {
-      std::cout << "Adding file: " << argv[i + 1] << std::endl;
+      if (verbose)
+        std::cout << "Adding file: " << argv[i + 1] << std::endl;
       files.push_back(argv[++i]);
       hasFiles = true;
     }
 
-    else if (std::string(argv[i]) == "-v")
+    else if (std::string(argv[i]) == "-d") {
+      if (verbose)
+        std::cout << "Output will be saved under output/" << argv[i + 1]
+                  << std::endl;
+      subfolder = std::string(argv[++i]);
+    }
 
+    else if (std::string(argv[i]) == "-v")
       try {
 
         version = std::stoi(argv[++i]);
@@ -77,10 +95,12 @@ void parseArguments(
         std::cerr << "Invalid -v value: " << e.what() << std::endl;
         exit(EXIT_FAILURE);
       }
+
     else if (std::string(argv[i]) == "-m" || std::string(argv[i]) == "--mode") {
 
       mode = argv[++i];
-      std::cout << "Running production mode " << mode << std::endl;
+      if (verbose)
+        std::cout << "Running production mode " << mode << std::endl;
       hasMode = true;
 
     } else {
@@ -100,7 +120,8 @@ void parseArguments(
     exit(EXIT_FAILURE);
   }
   if (!hasVersion) {
-    std::cout << "Running only the preprocess and STXS0" << std::endl;
+    if (verbose)
+      std::cout << "Running only the preprocess and STXS0" << std::endl;
     version = -1;
   }
 }
@@ -115,12 +136,17 @@ int main(int argc, char *argv[]) {
   std::vector<std::string> files;
   int version;
   std::string mode;
+  std::string subfolder;
 
   std::stringstream output_dir;
 
-  parseArguments(argc, argv, files, version, mode, second_categorization);
+  parseArguments(argc, argv, files, version, mode, subfolder,
+                 second_categorization);
 
-  output_dir << "output/" << mode;
+  output_dir << "output/";
+  if (subfolder != "")
+    output_dir << subfolder << "/";
+  output_dir << mode;
 
   auto df = setup(files[0], mode); // TODO: add multi file support
 
