@@ -50,7 +50,7 @@ void parseArguments(
     std::function<std::map<STXS1, ROOT::RDF::RNode>(
         std::map<STXS0, ROOT::RDF::RNode>)> &second_categorization) {
 
-  bool hasFiles(false), hasVersion(false), hasMode(false);
+  bool hasFiles(false), hasVersion(false), hasMode(false), hasExtraDir(false);
 
   std::vector<std::string> args(argv, argv + argc);
   bool verbose =
@@ -79,9 +79,10 @@ void parseArguments(
       break;
     case Flag::DIRECTORY:
       if (verbose)
-        std::cout << "Output will be saved under output/" << argv[i + 1]
+        std::cout << "Output will be saved under output/" << argv[i + 1] << "/"
                   << std::endl;
       subfolder = std::string(argv[++i]);
+      hasExtraDir = true;
       break;
     case Flag::VERSION:
       try {
@@ -129,5 +130,8 @@ void parseArguments(
     if (verbose)
       std::cout << "Running only the preprocess and STXS0" << std::endl;
     version = -1;
+  }
+  if (!hasExtraDir) {
+    std::cout << "Output will be saved under output/" << std::endl;
   }
 }
