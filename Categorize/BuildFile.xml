@@ -2,7 +2,7 @@
 <use name="root"/>
 <use name="rootcore"/>
 
-<Flags SKIP_FILES="cCconstants.cc Discriminants.cc"/>
+<flags SKIP_FILES="cCconstants.cc Discriminants.cc"/>
 
 <export>
   <use name="root"/>

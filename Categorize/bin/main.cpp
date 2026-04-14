@@ -1,8 +1,8 @@
 #include "STXS/Categorize/interface/STXS_common.h"
-#include "STXS/Categorize/plugins/Preprocess.cpp"
-#include "STXS/Categorize/plugins/STXS_categorization0.cpp"
-#include "STXS/Categorize/plugins/STXS_script.cpp"
-#include "STXS/Categorize/plugins/parseArgs.cpp"
+#include "STXS/Categorize/src/Preprocess.cpp"
+#include "STXS/Categorize/src/STXS_categorization0.cpp"
+#include "STXS/Categorize/src/STXS_script.cpp"
+#include "STXS/Categorize/src/parseArgs.cpp"
 #include <ROOT/RDF/InterfaceUtils.hxx>
 #include <ROOT/RDF/RInterface.hxx>
 #include <cstdlib>
