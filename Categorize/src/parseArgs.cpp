@@ -1,10 +1,12 @@
-#include "STXSCategorizer/Categorize/interface/STXS_common.h"
 #include "STXSCategorizer/Categorize/interface/STXS_categorization1p2.h"
 #include "STXSCategorizer/Categorize/interface/STXS_categorization1p3.h"
+#include "STXSCategorizer/Categorize/interface/STXS_common.h"
 #include <algorithm>
 #include <exception>
+#include <filesystem>
 #include <iostream>
 #include <map>
+#include <ostream>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -12,8 +14,9 @@
 
 std::string help_message() {
   std::stringstream ss;
-  ss << "Usage:\n\tSTXS13-plots -f ROOT_FILE [-f ROOT_FILE]... -v VERSION -m "
-        "MODE [-d SUB_DIR]"
+  ss << "Usage:\n\tSTXS-Categorization -f ROOT_FILE [-f ROOT_FILE]... -v "
+        "VERSION -m "
+        "MODE [-o PATH -d SUB_DIR]"
      << std::endl
      << std::endl
      << "Options:" << std::endl
@@ -22,6 +25,7 @@ std::string help_message() {
      << "\t-m,--mode MODE\tproduction mode (ggH, qqH, ttH, VH) determines\n"
         "\t\t\tthe output directory"
      << std::endl
+     << "\t-o PATH\t\tdefines the output directory defaults to ./output"
      << "\t-d SUB_DIR\tdefines the subdirectory under output the files "
         "will\n\t\t\tbe generated"
      << std::endl
@@ -31,13 +35,23 @@ std::string help_message() {
   return ss.str();
 };
 
-enum class Flag { HELP, FILE, VERSION, MODE, VERBOSE, DIRECTORY, UNKNOWN };
+enum class Flag {
+  HELP,
+  FILE,
+  VERSION,
+  MODE,
+  VERBOSE,
+  DIRECTORY,
+  PATH,
+  UNKNOWN
+};
 
 static const std::map<std::string, Flag> flagMap = {
     {"-h", Flag::HELP},           {"--help", Flag::HELP},
     {"-f", Flag::FILE},           {"-v", Flag::VERSION},
     {"-m", Flag::MODE},           {"--mode", Flag::MODE},
-    {"--verbose", Flag::VERBOSE}, {"-d", Flag::DIRECTORY}};
+    {"--verbose", Flag::VERBOSE}, {"-d", Flag::DIRECTORY},
+    {"-o", Flag::PATH},           {"--output", Flag::PATH}};
 
 Flag getFlag(const std::string &arg) {
   auto keyvalPair = flagMap.find(arg);
@@ -46,11 +60,11 @@ Flag getFlag(const std::string &arg) {
 
 void parseArguments(
     int argc, char *argv[], std::vector<std::string> &files, int &version,
-    std::string &mode, std::string &subfolder,
+    std::string &mode, std::string &output, std::string &subfolder,
     std::function<std::map<STXS1, ROOT::RDF::RNode>(
         std::map<STXS0, ROOT::RDF::RNode>)> &second_categorization) {
 
-  bool hasFiles(false), hasVersion(false), hasMode(false), hasExtraDir(false);
+  bool hasFiles(false), hasVersion(false), hasMode(false), hasPath(false);
 
   std::vector<std::string> args(argv, argv + argc);
   bool verbose =
@@ -66,24 +80,22 @@ void parseArguments(
     switch (flag) {
     case Flag::VERBOSE:
       break;
+
     case Flag::HELP:
       std::cout << help_message();
       exit(EXIT_SUCCESS);
       break;
 
-    case Flag::FILE:
+    case Flag::FILE: {
+      std::filesystem::path path(argv[++i]);
+      std::string pathStr(std::filesystem::absolute(path).string());
       if (verbose)
-        std::cout << "Adding file: " << argv[i + 1] << std::endl;
-      files.push_back(argv[++i]);
+        std::cout << "Adding file: " << pathStr << std::endl;
+      files.push_back(pathStr);
       hasFiles = true;
       break;
-    case Flag::DIRECTORY:
-      if (verbose)
-        std::cout << "Output will be saved under output/" << argv[i + 1] << "/"
-                  << std::endl;
-      subfolder = std::string(argv[++i]);
-      hasExtraDir = true;
-      break;
+    }
+
     case Flag::VERSION:
       try {
         version = std::stoi(argv[++i]);
@@ -103,12 +115,25 @@ void parseArguments(
         exit(EXIT_FAILURE);
       }
       break;
+
     case Flag::MODE:
       mode = argv[++i];
       if (verbose)
         std::cout << "Running production mode " << mode << std::endl;
       hasMode = true;
       break;
+
+    case Flag::PATH: {
+      std::filesystem::path path(argv[++i]);
+      output = std::filesystem::absolute(path).string();
+      hasPath = true;
+      break;
+    }
+
+    case Flag::DIRECTORY:
+      subfolder = std::string(argv[++i]);
+      break;
+
     case Flag::UNKNOWN:
       std::cerr << "Error parsing arguments: Unknown flag " << argv[i]
                 << std::endl;
@@ -131,7 +156,16 @@ void parseArguments(
       std::cout << "Running only the preprocess and STXS0" << std::endl;
     version = -1;
   }
-  if (!hasExtraDir) {
-    std::cout << "Output will be saved under output/" << std::endl;
+
+  if (!hasPath) {
+    std::filesystem::path defaultOutput("./output");
+    output = std::filesystem::absolute(defaultOutput).string();
+  }
+
+  if (verbose) { // Output directory verbose message
+    std::stringstream ss;
+    ss << "Output will be saved under " << output << "/" << subfolder
+       << std::endl;
+    std::cout << ss.str() << std::endl;
   }
 }

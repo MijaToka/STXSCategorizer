@@ -16,17 +16,19 @@ int main(int argc, char *argv[]) {
   std::function<std::map<STXS1, ROOT::RDF::RNode>(
       std::map<STXS0, ROOT::RDF::RNode>)>
       second_categorization;
+
   std::vector<std::string> files;
+
   int version;
-  std::string mode;
-  std::string subfolder;
+
+  std::string mode, output, subfolder;
 
   std::stringstream output_dir;
 
-  parseArguments(argc, argv, files, version, mode, subfolder,
+  parseArguments(argc, argv, files, version, mode, output, subfolder,
                  second_categorization);
 
-  output_dir << "output/";
+  output_dir << output << "/";
   if (subfolder != "")
     output_dir << subfolder << "/";
   output_dir << mode;
