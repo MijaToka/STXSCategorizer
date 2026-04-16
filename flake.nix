@@ -36,7 +36,6 @@
           dontBuild = true;
           installPhase = ''
             mkdir -p $out/include/ZZAnalysis/AnalysisStep/interface
-            mkdir -p $out/include/ZZAnalysis/AnalysisStep/src
             mkdir -p $out/share/ZZAnalysis/AnalysisStep/data/cconstants
 
             cp AnalysisStep/interface/{cConstants,Discriminants}.h \
@@ -81,8 +80,11 @@
               src
               ;
             cmakeFlags = [
-              "-DZZANALYSIS_INCLUDE_DIR=${zzanalysis-headers}/include"
+              "DZZANALYSIS_INCLUDE_DIR=${zzanalysis-headers}/include"
             ];
+            preConfigure = ''
+              ln -s ${src} ../STXSCategorizer
+            '';
           };
           default = self.packages.${system}.categorize;
         };

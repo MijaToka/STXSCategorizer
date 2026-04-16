@@ -38,7 +38,7 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 target_include_directories(Analysis
-  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../..
+  PUBLIC ${ZZANALYSIS_INCLUDE_DIR}
 )
 
 target_include_directories(Scripts

@@ -3,6 +3,8 @@
 
 #include <cassert>
 #include <cmath>
+#include <cstdlib>
+#include <filesystem>
 #include <iostream>
 
 cConstantSpline::cConstantSpline(const TString &filename)
@@ -24,33 +26,37 @@ double cConstantSpline::eval(double ZZMass, bool isDbkg) {
 }
 
 namespace {
-cConstantSpline
-    DbkgkinSpline2e2mu("data/ZZAnalysis/AnalysisStep/data/cconstants/"
-                       "SmoothKDConstant_m4l_Dbkgkin_2e2mu13TeV.root");
-cConstantSpline DbkgkinSpline4e("data/ZZAnalysis/AnalysisStep/data/cconstants/"
-                                "SmoothKDConstant_m4l_Dbkgkin_4e13TeV.root");
-cConstantSpline DbkgkinSpline4mu("data/ZZAnalysis/AnalysisStep/data/cconstants/"
-                                 "SmoothKDConstant_m4l_Dbkgkin_4mu13TeV.root");
+
+const std::filesystem::path cconstants =
+    std::filesystem::path(std::getenv("ZZANALYSIS_DATA")) / "data" /
+    "cconstants";
+
+cConstantSpline DbkgkinSpline2e2mu(
+    cconstants.string() + "/SmoothKDConstant_m4l_Dbkgkin_2e2mu13TeV.root");
+cConstantSpline DbkgkinSpline4e(cconstants.string() +
+                                "/SmoothKDConstant_m4l_Dbkgkin_4e13TeV.root");
+cConstantSpline DbkgkinSpline4mu(cconstants.string() +
+                                 "/SmoothKDConstant_m4l_Dbkgkin_4mu13TeV.root");
 cConstantSpline DbkgVBFdecSpline4l(
-    "data/ZZAnalysis/AnalysisStep/data/cconstants/"
-    "SmoothKDConstant_m4l_DbkgjjEWQCD_4l_JJVBFTagged_13TeV.root");
+    cconstants.string() +
+    "/SmoothKDConstant_m4l_DbkgjjEWQCD_4l_JJVBFTagged_13TeV.root");
 cConstantSpline DbkgVBFdecSpline2l2l(
-    "data/ZZAnalysis/AnalysisStep/data/cconstants/"
-    "SmoothKDConstant_m4l_DbkgjjEWQCD_2l2l_JJVBFTagged_13TeV.root");
+    cconstants.string() +
+    "/SmoothKDConstant_m4l_DbkgjjEWQCD_2l2l_JJVBFTagged_13TeV.root");
 cConstantSpline DbkgVHdecSpline4l(
-    "data/ZZAnalysis/AnalysisStep/data/cconstants/"
-    "SmoothKDConstant_m4l_DbkgjjEWQCD_4l_HadVHTagged_13TeV.root");
+    cconstants.string() +
+    "/SmoothKDConstant_m4l_DbkgjjEWQCD_4l_HadVHTagged_13TeV.root");
 cConstantSpline DbkgVHdecSpline2l2l(
-    "data/ZZAnalysis/AnalysisStep/data/cconstants/"
-    "SmoothKDConstant_m4l_DbkgjjEWQCD_2l2l_HadVHTagged_13TeV.root");
-cConstantSpline DVBF2jetsSpline("data/ZZAnalysis/AnalysisStep/data/cconstants/"
-                                "SmoothKDConstant_m4l_DjjVBF13TeV.root");
-cConstantSpline DVBF1jetSpline("data/ZZAnalysis/AnalysisStep/data/cconstants/"
-                               "SmoothKDConstant_m4l_DjVBF13TeV.root");
-cConstantSpline DZHhSpline("data/ZZAnalysis/AnalysisStep/data/"
-                           "cconstants/SmoothKDConstant_m4l_DjjZH13TeV.root");
-cConstantSpline DWHhSpline("data/ZZAnalysis/AnalysisStep/data/"
-                           "cconstants/SmoothKDConstant_m4l_DjjWH13TeV.root");
+    cconstants.string() +
+    "/SmoothKDConstant_m4l_DbkgjjEWQCD_2l2l_HadVHTagged_13TeV.root");
+cConstantSpline DVBF2jetsSpline(cconstants.string() +
+                                "/SmoothKDConstant_m4l_DjjVBF13TeV.root");
+cConstantSpline DVBF1jetSpline(cconstants.string() +
+                               "/SmoothKDConstant_m4l_DjVBF13TeV.root");
+cConstantSpline DZHhSpline(cconstants.string() +
+                           "/SmoothKDConstant_m4l_DjjZH13TeV.root");
+cConstantSpline DWHhSpline(cconstants.string() +
+                           "/SmoothKDConstant_m4l_DjjWH13TeV.root");
 } // namespace
 
 extern "C" float getDVBF2jetsConstant(float ZZMass) {
