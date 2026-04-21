@@ -1,20 +1,13 @@
-cmake_minimum_required(VERSION 3.26.5)
-project(STXS-Categorization-BDT VERSION 0.0.1)
-
 add_executable(${PROJECT_NAME}-train 
   bin/train.cpp
 )
 
-add_executable(${PROJECT_NAME}-application 
+add_executable(${PROJECT_NAME}-bdt 
   bin/application.cpp
 )
 
-install(TARGETS ${PROJECT_NAME}-train ${PROJECT_NAME}-application 
+install(TARGETS ${PROJECT_NAME}-train ${PROJECT_NAME}-bdt 
   RUNTIME DESTINATION bin
-)
-
-find_package(
-  ROOT 6.38 CONFIG REQUIRED
 )
 
 #[[
@@ -33,11 +26,10 @@ add_library(STXS_BDT_Common
 target_link_libraries(${PROJECT_NAME}-train
   PUBLIC
     ${ROOT_LIBRARIES}
-  #[[
   PRIVATE
-    STXS_BDT_Common
-    STXS_BDT_Train
-    ]]
+    STXS_CommonUtils
+    # STXS_BDT_Common
+    # STXS_BDT_Train
 )
 
 #[[
@@ -50,7 +42,7 @@ target_include_directories(${PROJECT_NAME}-application
 )
 ]]
 
-target_link_libraries(${PROJECT_NAME}-application
+target_link_libraries(${PROJECT_NAME}-bdt
   PUBLIC
     ${ROOT_LIBRARIES}
   #[[

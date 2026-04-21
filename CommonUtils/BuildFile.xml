@@ -1,12 +1,12 @@
-<use name="STXSCategorizer/CommonUtils"/>
+<use name="ZZAnalysis/AnalysisStep"/>
 <use name="root"/>
-<use name="rootcore"/>
-<use name="rootvecops"/>
 <use name="rootdataframe"/>
+
+<flags SKIP_FILES="cConstants.cc Discriminants.cc"/>
 
 <export>
   <use name="root"/>
-  <use name="rootvecops"/>
   <use name="rootdataframe"/>
+  <use name="ZZAnalysis/AnalysisStep"/>
   <lib name="1"/>
 </export>

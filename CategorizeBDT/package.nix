@@ -2,13 +2,17 @@
   perSystem =
     {
       pkgs,
+      self',
       ...
     }:
     {
       packages =
         let
           src = ./..;
-          buildInputs = with pkgs; [ root ];
+          buildInputs = [
+            pkgs.root
+            self'.packages.zzanalysis-headers
+          ];
           nativeBuildInputs = with pkgs; [
             cmake
             pkg-config
@@ -18,7 +22,10 @@
           '';
           pname = "STXS-Categorize-BDT";
           version = "0.0.1";
-          cmakeFlags = [ "-DBUILD_CATEGORIZEBDT=ON" ];
+          cmakeFlags = [
+            "-DZZANALYSIS_INCLUDE_DIR=${self'.packages.zzanalysis-headers}/include"
+            "-DBUILD_CATEGORIZEBDT=ON"
+          ];
         in
         {
           trainBDT = pkgs.stdenv.mkDerivation {
