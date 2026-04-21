@@ -16,3 +16,4 @@ compile_commands.json
 pyrightconfig.json
 Analyze/__pycache__
 Analyze/python/__pycache__
+run_categorize.sh
