@@ -327,7 +327,12 @@ ROOT::RDF::RNode setup(std::string &file, const std::string &mode) {
                   [](ROOT::VecOps::RVec<Float_t> bTag) {
                     return ROOT::VecOps::Sum(bTag > 0.2421);
                   },
-                  {"Jet_btagPNetB_filtered"});
+                  {"Jet_btagPNetB_filtered"})
+          .Define("ZZCand_nExtraLep_best",
+                  [](ROOT::VecOps::RVec<Int_t> nExtraLep, Short_t idx) {
+                    return nExtraLep[idx];
+                  },
+                  {"ZZCand_nExtraLep", "bestCandIdx"});
 
   // Define MET alias for cosnsistency
   df = df.Define("PFMET_pt", "MET_pt");
